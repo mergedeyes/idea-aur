@@ -1,0 +1,14 @@
+pkgbase = idea
+	pkgdesc = Tiny CLI for capturing ideas by topic, stored as local JSON
+	pkgver = 0.2.1
+	pkgrel = 1
+	url = https://github.com/mergedeyes/idea
+	arch = x86_64
+	license = GPL-3.0-only
+	makedepends = cargo
+	depends = glibc
+	depends = gcc-libs
+	source = idea-0.2.1.tar.gz::https://github.com/mergedeyes/idea/archive/refs/tags/v0.2.1.tar.gz
+	sha256sums = eccd2bb972e499261a8040bd69580c74fa45c4972f8b0f28a69b997be11e5995
+
+pkgname = idea
