@@ -1,0 +1,31 @@
+name: Publish to AUR
+
+# Fires only when main actually changes (i.e. you merged the bump PR from
+# idea's bump-aur.yml workflow, or you're pushing a manual fix) -- never
+# unattended off a raw upstream release. This is the only workflow that
+# holds the AUR-push-capable SSH key, and it lives in this small repo's
+# own secrets, not idea's -- so a compromised action/dependency in idea's
+# CI can't reach it.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up AUR SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.AUR_SSH_PRIVATE_KEY }}" > ~/.ssh/aur
+          chmod 600 ~/.ssh/aur
+          ssh-keyscan -t ed25519 aur.archlinux.org >> ~/.ssh/known_hosts
+
+      - name: Push to AUR
+        run: |
+          git remote add aur ssh://aur@aur.archlinux.org/idea.git || true
+          GIT_SSH_COMMAND="ssh -i ~/.ssh/aur -o IdentitiesOnly=yes" git push aur HEAD:master
